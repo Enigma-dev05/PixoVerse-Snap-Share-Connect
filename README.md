@@ -1,3 +1,5 @@
+PIXOVERSE : Snap, Share, Connect
+
 In today’s world, social media is a big part of how people share their life moments, ideas, and creativity. 
 
 Photo and video sharing has become one of the most popular ways to connect online, along with features like likes, comments, and real-time messaging.
