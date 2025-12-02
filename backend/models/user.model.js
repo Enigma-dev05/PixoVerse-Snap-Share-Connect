@@ -27,6 +27,8 @@ const userSchema = new mongoose.Schema(
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
     saved: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+    loops: [{ type: mongoose.Schema.Types.ObjectId, ref: "Loop" }],
+    story: [{ type: mongoose.Schema.Types.ObjectId, ref: "Story" }],
   },
   { timestamps: true }
 );
