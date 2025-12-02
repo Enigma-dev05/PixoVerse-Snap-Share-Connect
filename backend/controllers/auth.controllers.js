@@ -16,6 +16,12 @@ export const signUp = async (req, res) => {
       return res.status(400).json({ message: "Username Already Exists!" });
     }
 
+    if (password.length < 6) {
+      return res
+        .status(400)
+        .json({ message: "Password must be atleast 6 characters long" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
@@ -67,5 +73,14 @@ export const signIn = async (req, res) => {
     return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json({ message: `SignIn Error ${error}` });
+  }
+};
+
+export const signOut = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    return res.status(200).json({ message: "Signout Successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: `SignOut Error ${error}` });
   }
 };
