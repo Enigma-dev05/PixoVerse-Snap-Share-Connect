@@ -1,6 +1,6 @@
 import genToken from "../config/token.js";
 import User from "../models/user.model.js";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 
 export const signUp = async (req, res) => {
   try {
@@ -55,7 +55,7 @@ export const signIn = async (req, res) => {
       return res.status(404).json({ message: "User Not Found!" });
     }
 
-    const isMatch = bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(400).json({ message: "Incorrect Password!" });
