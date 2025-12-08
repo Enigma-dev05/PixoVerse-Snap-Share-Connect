@@ -14,7 +14,8 @@ function SignUp() {
   return (
     <div className="w-full h-screen bg-gradient-to-b from-black to-gray-900 flex flex-col justify-center items-center">
       <div className="w-[90%] lg:max-w-[60%] h-[600px] bg-zinc-400 rounded-2xl flex justify-center items-center overflow-hidden border-2 border-[#1a1f23]">
-        <div className="w-full lg:w-[50%] h-full bg-zinc-400 flex flex-col items-center p-[10px] gap-[20px]">
+        {/*This is the Left Side of the Div i.e Sign Up Details */}
+        <div className="w-full lg:w-[50%] h-full bg-zinc-400 flex flex-col items-center p-[10px] gap-[15px]">
           <div className="flex gap-[10px] items-center text-[20px] font-semibold mt-[14px]">
             <span>Sign Up To</span>
             <img
@@ -24,7 +25,7 @@ function SignUp() {
             />
           </div>
           <div
-            className="relative flex items-center justify-start w-[90%] h-[50px] rounded-2xl mt-[30px] border-2 border-black"
+            className="relative flex items-center justify-start w-[90%] h-[50px] rounded-2xl mt-[20px] border-2 border-black"
             onClick={() => setInputClicked({ ...inputClicked, name: true })}>
             <label
               htmlFor="name"
@@ -42,7 +43,7 @@ function SignUp() {
             />
           </div>
           <div
-            className="relative flex items-center justify-start w-[90%] h-[50px] rounded-2xl mt-[30px] border-2 border-black"
+            className="relative flex items-center justify-start w-[90%] h-[50px] rounded-2xl mt-[20px] border-2 border-black"
             onClick={() =>
               setInputClicked({ ...inputClicked, userName: true })
             }>
@@ -61,7 +62,7 @@ function SignUp() {
             />
           </div>
           <div
-            className="relative flex items-center justify-start w-[90%] h-[50px] rounded-2xl mt-[30px] border-2 border-black"
+            className="relative flex items-center justify-start w-[90%] h-[50px] rounded-2xl mt-[20px] border-2 border-black"
             onClick={() => setInputClicked({ ...inputClicked, email: true })}>
             <label
               htmlFor="email"
@@ -77,7 +78,7 @@ function SignUp() {
             />
           </div>
           <div
-            className="relative flex items-center justify-start w-[90%] h-[50px] rounded-2xl mt-[30px] border-2 border-black"
+            className="relative flex items-center justify-start w-[90%] h-[50px] rounded-2xl mt-[20px] border-2 border-black"
             onClick={() =>
               setInputClicked({ ...inputClicked, password: true })
             }>
@@ -110,8 +111,22 @@ function SignUp() {
           <button className="w-[70%] px-[20px] py-[10px] bg-black text-white font-semibold h-[50px] cursor-pointer rounded-2xl mt-[30px]">
             Sign Up
           </button>
+          <p className="cursor-default text-gray-800">
+            Already Have An Account?{" "}
+            <span className="cursor-pointer border-b-2 border-b-black pb-[3px] text-black font-semibold">
+              Sign In
+            </span>
+          </p>
         </div>
-        <div className="md:w-[50%] h-full hidden lg:flex justify-center items-center bg-[#000000] flex-col gap-[10px] text-white text-[16px] font-semibold rounded-l-[30px] shadow-2xl shadow-black"></div>
+        {/*This is the Rigth Side of the Div i.e Logo */}
+        <div className="md:w-[50%] h-full hidden lg:flex justify-center items-center bg-[#000000] flex-col gap-[10px] text-white text-[16px] font-semibold rounded-l-[30px] shadow-2xl shadow-black">
+          <img
+            src={logo}
+            alt="Logo Of PixoVerse"
+            className="w-[100%]"
+          />
+          <div></div>
+        </div>
       </div>
     </div>
   );
