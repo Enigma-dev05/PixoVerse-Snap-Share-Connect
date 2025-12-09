@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import logo from "../assets/Pixoverse-u.png";
 import { IoIosEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
+import axios from "axios";
+import { serverUrl } from "../App";
+import { ClipLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [inputClicked, setInputClicked] = useState({
@@ -10,7 +14,32 @@ function SignUp() {
     email: false,
     password: false,
   });
+
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleSignUp = async () => {
+    try {
+      setLoading(true);
+      const result = await axios.post(
+        `${serverUrl}/api/auth/signup`,
+        { name, userName, email, password },
+        { withCredentials: true }
+      );
+      console.log(result.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error.response?.data?.message);
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="w-full h-screen bg-gradient-to-b from-black to-gray-900 flex flex-col justify-center items-center">
       <div className="w-[90%] lg:max-w-[60%] h-[600px] bg-zinc-400 rounded-2xl flex justify-center items-center overflow-hidden border-2 border-[#1a1f23]">
@@ -40,6 +69,8 @@ function SignUp() {
               id="name"
               className="w-[100%] h-[100%] rounded-2xl px-[20px] outline-none border-0"
               required
+              onChange={(e) => setName(e.target.value)}
+              value={name}
             />
           </div>
           <div
@@ -59,6 +90,8 @@ function SignUp() {
               id="userName"
               className="w-[100%] h-[100%] rounded-2xl px-[20px] outline-none border-0"
               required
+              onChange={(e) => setUserName(e.target.value)}
+              value={userName}
             />
           </div>
           <div
@@ -75,6 +108,8 @@ function SignUp() {
               id="email"
               className="w-[100%] h-[100%] rounded-2xl px-[20px] outline-none border-0"
               required
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
             />
           </div>
           <div
@@ -95,6 +130,8 @@ function SignUp() {
               id="password"
               className="w-[100%] h-[100%] rounded-2xl px-[20px] outline-none border-0"
               required
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
             />
             {!showPassword ? (
               <IoIosEye
@@ -108,12 +145,24 @@ function SignUp() {
               />
             )}
           </div>
-          <button className="w-[70%] px-[20px] py-[10px] bg-black text-white font-semibold h-[50px] cursor-pointer rounded-2xl mt-[30px]">
-            Sign Up
+          <button
+            className="w-[70%] px-[20px] py-[10px] bg-black text-white font-semibold h-[50px] cursor-pointer rounded-2xl mt-[30px]"
+            onClick={handleSignUp}
+            disabled={loading}>
+            {loading ? (
+              <ClipLoader
+                size={30}
+                color="white"
+              />
+            ) : (
+              "Sign Up"
+            )}
           </button>
           <p className="cursor-default text-gray-800">
             Already Have An Account?{" "}
-            <span className="cursor-pointer border-b-2 border-b-black pb-[3px] text-black font-semibold">
+            <span
+              className="cursor-pointer border-b-2 border-b-black pb-[3px] text-black font-semibold"
+              onClick={() => navigate("/signin")}>
               Sign In
             </span>
           </p>
