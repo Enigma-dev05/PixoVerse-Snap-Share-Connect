@@ -19,6 +19,7 @@ function SignUp() {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [userName, setUserName] = useState("");
+  const [err, setErr] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
