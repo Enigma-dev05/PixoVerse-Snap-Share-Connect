@@ -1,6 +1,7 @@
 import genToken from "../config/token.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
+import sendMail from "../config/Mail.js";
 
 export const signUp = async (req, res) => {
   try {
@@ -82,5 +83,28 @@ export const signOut = async (req, res) => {
     return res.status(200).json({ message: "Signout Successfully" });
   } catch (error) {
     return res.status(500).json({ message: `SignOut Error ${error}` });
+  }
+};
+
+export const sendOtp = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User Does Not Exist" });
+    }
+
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+
+    user.resetOtp = otp;
+    user.otpExpires = new Date.now() + 5 * 60 * 1000;
+    user.isOtpVerified = false;
+
+    await user.save();
+    await sendMail(email, otp);
+
+    return res.status(200).json({ message: "Email Send Successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: `Send OTP Error ${error}` });
   }
 };
