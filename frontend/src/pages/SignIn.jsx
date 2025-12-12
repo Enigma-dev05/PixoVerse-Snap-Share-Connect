@@ -6,6 +6,8 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
 
 function SignIn() {
   const [inputClicked, setInputClicked] = useState({
@@ -17,21 +19,25 @@ function SignIn() {
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [err, setErr] = useState("");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSignIn = async () => {
+    setLoading(true);
+    setErr("");
     try {
-      setLoading(true);
       const result = await axios.post(
         `${serverUrl}/api/auth/signin`,
         { userName, password },
         { withCredentials: true }
       );
-      console.log(result.data);
+      dispatch(setUserData(result.data.user));
       setLoading(false);
     } catch (error) {
-      console.log(error.response?.data?.message);
+      console.log(err);
+      setErr(error.response?.data?.message);
       setLoading(false);
     }
   };
@@ -108,6 +114,9 @@ function SignIn() {
             onClick={() => navigate("/forgot-password")}>
             Forgot Password
           </div>
+
+          {err && <p className="text-red-500">{err}</p>}
+
           <button
             className="w-[70%] px-[20px] py-[10px] bg-black text-white font-semibold h-[50px] cursor-pointer rounded-2xl mt-[30px]"
             onClick={handleSignIn}

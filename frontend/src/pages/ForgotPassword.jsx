@@ -13,12 +13,14 @@ function ForgotPassword() {
   });
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
+  const [err, setErr] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleStep1 = async () => {
     setLoading(true);
+    setErr("");
     try {
       const result = await axios.post(
         `${serverUrl}/api/auth/sendOtp`,
@@ -31,13 +33,15 @@ function ForgotPassword() {
       setStep(2);
       setLoading(false);
     } catch (error) {
-      console.log(error.response?.data?.message);
+      console.log(error);
+      setErr(error.response?.data?.message);
       setLoading(false);
     }
   };
 
   const handleStep2 = async () => {
     setLoading(true);
+    setErr("");
     try {
       const result = await axios.post(
         `${serverUrl}/api/auth/verifyOtp`,
@@ -50,17 +54,19 @@ function ForgotPassword() {
       setStep(3);
       setLoading(false);
     } catch (error) {
-      console.log(error.response?.data?.message);
+      console.log(error);
+      setErr(error.response?.data?.message);
       setLoading(false);
     }
   };
 
   const handleStep3 = async () => {
+    if (newPassword !== confirmNewPassword) {
+      return setErr("Password Does Not Match!");
+    }
+    setErr("");
     setLoading(true);
     try {
-      if (newPassword !== confirmNewPassword) {
-        return console.log("Password Does Not Match!");
-      }
       const result = await axios.post(
         `${serverUrl}/api/auth/resetPassword`,
         { email, password: newPassword },
@@ -71,7 +77,8 @@ function ForgotPassword() {
       console.log(result);
       setLoading(false);
     } catch (error) {
-      console.log(error.response?.data?.message);
+      console.log(error);
+      setErr(error.response?.data?.message);
       setLoading(false);
     }
   };
@@ -101,6 +108,9 @@ function ForgotPassword() {
               value={email}
             />
           </div>
+
+          {err && <p className="text-red-500">{err}</p>}
+
           <button
             className="w-[70%] px-[20px] py-[10px] bg-black text-white font-semibold h-[50px] cursor-pointer rounded-2xl mt-[40px]"
             disabled={loading}
@@ -140,6 +150,9 @@ function ForgotPassword() {
               value={otp}
             />
           </div>
+
+          {err && <p className="text-red-500">{err}</p>}
+
           <button
             className="w-[70%] px-[20px] py-[10px] bg-black text-white font-semibold h-[50px] cursor-pointer rounded-2xl mt-[40px]"
             disabled={loading}
@@ -206,6 +219,9 @@ function ForgotPassword() {
               value={confirmNewPassword}
             />
           </div>
+
+          {err && <p className="text-red-500">{err}</p>}
+
           <button
             className="w-[70%] px-[20px] py-[10px] bg-black text-white font-semibold h-[50px] cursor-pointer rounded-2xl mt-[40px]"
             disabled={loading}
