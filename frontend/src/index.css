@@ -1,8 +1,17 @@
 @import "tailwindcss";
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 1000px #a1a1aa inset !important;
   -webkit-text-fill-color: #000 !important;
   background-color: #a1a1aa !important;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }

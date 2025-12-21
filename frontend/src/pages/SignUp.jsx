@@ -39,6 +39,7 @@ function SignUp() {
       );
       dispatch(setUserData(result.data.user));
       setLoading(false);
+      navigate("/");
     } catch (error) {
       setErr(error.response?.data?.message);
       console.log(error);

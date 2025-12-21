@@ -35,8 +35,8 @@ function SignIn() {
       );
       dispatch(setUserData(result.data.user));
       setLoading(false);
+      navigate("/");
     } catch (error) {
-      console.log(err);
       setErr(error.response?.data?.message);
       setLoading(false);
     }
