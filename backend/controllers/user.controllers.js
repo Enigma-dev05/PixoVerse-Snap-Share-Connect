@@ -1,4 +1,3 @@
-import { use } from "react";
 import uploadOnCloudinary from "../config/cloudinary.js";
 import User from "../models/user.model.js";
 
@@ -48,13 +47,14 @@ export const editProfile = async (req, res) => {
     }
 
     let profileImage;
+
     if (req.file) {
       profileImage = await uploadOnCloudinary(req.file.path);
+      user.profileImage = profileImage;
     }
 
     user.name = name;
-    user.userName = userNameprName;
-    user.profileImage = profileImage;
+    user.userName = userName;
     user.bio = bio;
     user.profession = profession;
     user.gender = gender;
@@ -64,5 +64,20 @@ export const editProfile = async (req, res) => {
     return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json({ message: `Edit Profile Error ${error}!` });
+  }
+};
+
+export const getProfile = async (req, res) => {
+  try {
+    const userName = req.params.userName;
+    const user = await User.findOne({ userName }).select("-password");
+
+    if (!user) {
+      return res.status(400).json({ message: "User Not Found!" });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: `Get Profile Error ${error}!` });
   }
 };

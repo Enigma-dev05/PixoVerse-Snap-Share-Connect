@@ -5,7 +5,7 @@ const isAuth = async (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token) {
-      return res.status(400).json({ message: "Token Not Found!" });
+      return res.status(401).json({ message: "Token Not Found!" });
     }
 
     const verifyToken = await jwt.verify(token, process.env.JWT_SECRET);

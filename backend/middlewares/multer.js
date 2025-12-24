@@ -1,10 +1,20 @@
 import multer from "multer";
+import path from "path";
+import fs from "fs";
+
+const uploadDir = path.join(process.cwd(), "public");
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
 const storage = multer.diskStorage({
-  destination: (res, file, cb) => {
-    cb(null, "../public");
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
   },
-  filename: (res, file, cb) => {
-    cb(null, file.originalname);
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${Date.now()}${ext}`);
   },
 });
 

@@ -7,12 +7,13 @@ import ForgotPassword from "./pages/ForgotPassword";
 import { useSelector } from "react-redux";
 import GetCurrentUser from "./hooks/getCurrentUser";
 import GetSuggestedUsers from "./hooks/getSuggestedUsers";
+import Profile from "./pages/Profile";
+import EditProfile from "./pages/EditProfile";
 
 export const serverUrl = "http://localhost:8000";
 
 function App() {
   GetCurrentUser();
-  GetSuggestedUsers();
   const { userData } = useSelector((state) => state.user);
 
   return (
@@ -27,10 +28,19 @@ function App() {
       />
       <Route
         path="/"
-        element={userData ? <Home /> : <Navigate to={"/signin"} />}></Route>
+        element={userData ? <Home /> : <Navigate to={"/signin"} />}
+      />
       <Route
         path="/forgot-password"
         element={!userData ? <ForgotPassword /> : <Navigate to={"/"} />}
+      />
+      <Route
+        path="/profile/:userName"
+        element={userData ? <Profile /> : <Navigate to={"/signin"} />}
+      />
+      <Route
+        path="/editprofile"
+        element={userData ? <EditProfile /> : <Navigate to={"/signin"} />}
       />
     </Routes>
   );
