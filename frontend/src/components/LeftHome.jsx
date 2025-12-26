@@ -7,10 +7,12 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { setUserData } from "../redux/userSlice";
 import OtherUser from "./OtherUser";
+import { useNavigate } from "react-router-dom";
 
 function LeftHome() {
   const { userData, suggestedUsers } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogOut = async () => {
     try {
@@ -18,6 +20,8 @@ function LeftHome() {
         withCredentials: true,
       });
       dispatch(setUserData(null));
+
+      navigate("/signin", { replace: true });
     } catch (error) {
       console.log(error);
     }

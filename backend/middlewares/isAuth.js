@@ -8,13 +8,19 @@ const isAuth = async (req, res, next) => {
       return res.status(401).json({ message: "Token Not Found!" });
     }
 
-    const verifyToken = await jwt.verify(token, process.env.JWT_SECRET);
+    const verifyToken = jwt.verify(token, process.env.JWT_SECRET);
 
     req.userId = verifyToken.userId;
 
     next();
   } catch (error) {
-    return res.status(500).json({ message: `isAuth Error ${error}` });
+    if (
+      error.name === "JsonWebTokenError" ||
+      error.name === "TokenExpiredError"
+    ) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+    return res.status(500).json({ message: `Server Error: ${error.message}` });
   }
 };
 

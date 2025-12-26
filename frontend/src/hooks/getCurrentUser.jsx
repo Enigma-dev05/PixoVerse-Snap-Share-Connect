@@ -1,24 +1,36 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import { serverUrl } from "../App";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../redux/userSlice";
 
 function GetCurrentUser() {
   const dispatch = useDispatch();
+  const { userData } = useSelector((state) => state.user);
+
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const result = await axios.get(`${serverUrl}/api/user/current`, {
-          withCredentials: true,
-        });
-        dispatch(setUserData(result.data));
-      } catch (error) {
-        console.log(error);
-      }
+    if (!userData) return;
+
+    const controller = new AbortController();
+
+    axios
+      .get(`${serverUrl}/api/user/current`, {
+        withCredentials: true,
+        signal: controller.signal,
+      })
+      .then((res) => {
+        dispatch(setUserData(res.data));
+      })
+      .catch((error) => {
+        if (error.name === "CanceledError") return;
+        if (error.response?.status === 401) return;
+      });
+
+    return () => {
+      controller.abort();
     };
-    fetchUser();
-  }, [dispatch]);
+  }, [userData, dispatch]);
+
   return null;
 }
 

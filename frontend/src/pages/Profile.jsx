@@ -15,27 +15,44 @@ function Profile() {
   const { profileData, userData } = useSelector((state) => state.user);
 
   useEffect(() => {
+    if (!userData) return;
+
+    const controller = new AbortController();
+
     const handleProfile = async () => {
       try {
         const result = await axios.get(
           `${serverUrl}/api/user/getProfile/${userName}`,
-          { withCredentials: true }
+          {
+            withCredentials: true,
+            signal: controller.signal,
+          }
         );
+
         dispatch(setProfileData(result.data));
       } catch (error) {
-        console.log(error);
+        if (error.name === "CanceledError") return;
+        if (error.response?.status === 401) return;
       }
     };
+
     handleProfile();
-  }, [userName, dispatch]);
+
+    return () => {
+      controller.abort();
+    };
+  }, [userName, userData, dispatch]);
 
   const handleLogOut = async () => {
     try {
       await axios.get(`${serverUrl}/api/auth/signout`, {
         withCredentials: true,
       });
+
       dispatch(setUserData(null));
-      navigate("/signin");
+      dispatch(setProfileData(null));
+
+      navigate("/signin", { replace: true });
     } catch (error) {
       console.log(error);
     }
@@ -160,15 +177,17 @@ function Profile() {
       </div>
 
       <div className="w-full h-[100px] flex justify-center items-center gap-[20px] mt-[10px]">
-        {profileData?._id === userData._id && (
-          <button
-            className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-gray-50 cursor-pointer rounded-2xl"
-            onClick={() => navigate("/editprofile")}>
-            Edit Profile
-          </button>
+        {userData && profileData?._id === userData._id && (
+          <>
+            <button
+              className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-gray-50 cursor-pointer rounded-2xl"
+              onClick={() => navigate("/editprofile")}>
+              Edit Profile
+            </button>
+          </>
         )}
 
-        {profileData?._id !== userData._id && (
+        {userData && profileData?._id !== userData._id && (
           <>
             <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-gray-50 cursor-pointer rounded-2xl">
               Follow

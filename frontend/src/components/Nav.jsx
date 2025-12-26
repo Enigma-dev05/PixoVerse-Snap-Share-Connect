@@ -16,13 +16,13 @@ function Nav() {
         <GoHomeFill className="text-white w-[25px] h-[25px] cursor-pointer" />
       </div>
       <div>
-        <FiSearch className="text-white w-[25px] h-[25px]" />
+        <FiSearch className="text-white w-[25px] h-[25px] cursor-pointer" />
+      </div>
+      <div onClick={() => navigate("/upload")}>
+        <FiPlusSquare className="text-white w-[25px] h-[25px] cursor-pointer" />
       </div>
       <div>
-        <FiPlusSquare className="text-white w-[25px] h-[25px]" />
-      </div>
-      <div>
-        <RxVideo className="text-white w-[30px] h-[30px]" />
+        <RxVideo className="text-white w-[30px] h-[30px] cursor-pointer" />
       </div>
       <div
         className="w-[45px] h-[45px] border-2 border-gray-800 rounded-full cursor-pointer overflow-hidden"
