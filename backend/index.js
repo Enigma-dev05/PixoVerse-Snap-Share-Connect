@@ -27,7 +27,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/post", postRouter);
 app.use("/api/loop", loopRouter);
-app.use("/api/loop", storyRouter);
+app.use("/api/story", storyRouter);
 
 app.listen(port, () => {
   connectDB();

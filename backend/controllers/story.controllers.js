@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import Story from "../models/story.model.js";
+import uploadOnCloudinary from "../config/cloudinary.js";
 
 export const uploadStory = async (req, res) => {
   try {
