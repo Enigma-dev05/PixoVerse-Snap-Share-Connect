@@ -3,10 +3,13 @@ import logo from "../assets/Pixoverse-u.png";
 import { FaRegHeart } from "react-icons/fa6";
 import StoryDp from "./StoryDp";
 import Nav from "./Nav";
+import { useSelector } from "react-redux";
+import Post from "./Post";
 
 function Feed() {
-  const scrollRef = useRef(null);
+  const { postData } = useSelector((state) => state.post);
 
+  const scrollRef = useRef(null);
   const handleWheel = (e) => {
     if (scrollRef.current) {
       scrollRef.current.scrollLeft += e.deltaY;
@@ -42,6 +45,12 @@ function Feed() {
       </div>
       <div className="w-full min-h-[100vh] flex flex-col items-center gap-[20px] p-[10px] pt-[40px] bg-gradient-to-b from-gray-800 to-gray-900 rounded-t-[60px] relative pb-[120px] mt-5">
         <Nav />
+        {postData?.map((post, index) => (
+          <Post
+            post={post}
+            key={index}
+          />
+        ))}
       </div>
     </div>
   );

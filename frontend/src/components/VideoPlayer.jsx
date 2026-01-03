@@ -4,7 +4,7 @@ import { FiVolumeX } from "react-icons/fi";
 
 function VideoPlayer({ media }) {
   const videoTag = useRef();
-  const [mute, setMute] = useState(false);
+  const [mute, setMute] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
 
   const handleClick = () => {
@@ -16,15 +16,16 @@ function VideoPlayer({ media }) {
       setIsPlaying(true);
     }
   };
+
   return (
-    <div className="h-[100%] relative cursor-pointer max-w-full rounded-2xl overflow-hidden">
+    <div className="w-full relative cursor-pointer rounded-2xl overflow-hidden">
       <video
         ref={videoTag}
         src={media}
         autoPlay
         loop
         muted={mute}
-        className="cursor-pointer w-full h-auto max-h-[300px] object-cover"
+        className="cursor-pointer w-full h-auto object-contain max-h-[600px]"
         onClick={handleClick}
       />
 

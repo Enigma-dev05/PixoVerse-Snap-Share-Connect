@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserData } from "../redux/userSlice";
+import { setFollowing, setUserData } from "../redux/userSlice";
 
 function GetCurrentUser() {
   const dispatch = useDispatch();
@@ -20,6 +20,7 @@ function GetCurrentUser() {
       })
       .then((res) => {
         dispatch(setUserData(res.data));
+        dispatch(setFollowing(res.data.following));
       })
       .catch((error) => {
         if (error.name === "CanceledError") return;

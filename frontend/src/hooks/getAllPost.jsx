@@ -2,24 +2,23 @@ import { useEffect } from "react";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
-import { setSuggestedUsers } from "../redux/userSlice";
+import { setUserData } from "../redux/userSlice";
+import { setPostData } from "../redux/postSlice";
 
-function GetSuggestedUsers() {
+function GetAllPost() {
   const dispatch = useDispatch();
-  const { userData } = useSelector((state) => state.user);
+  const { postData } = useSelector((state) => state.post);
 
   useEffect(() => {
-    if (!userData) return;
-
     const controller = new AbortController();
 
     axios
-      .get(`${serverUrl}/api/user/suggested`, {
+      .get(`${serverUrl}/api/post/getAll`, {
         withCredentials: true,
         signal: controller.signal,
       })
       .then((res) => {
-        dispatch(setSuggestedUsers(res.data));
+        dispatch(setPostData(res.data));
       })
       .catch((error) => {
         if (error.name === "CancelledError") return;
@@ -29,9 +28,9 @@ function GetSuggestedUsers() {
     return () => {
       controller.abort();
     };
-  }, [userData, dispatch]);
+  }, [postData, dispatch]);
 
   return null;
 }
 
-export default GetSuggestedUsers;
+export default GetAllPost;

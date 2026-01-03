@@ -2,9 +2,10 @@ import React from "react";
 import { useSelector } from "react-redux";
 import emptyImage from "../assets/Empty-Image.png";
 import { useNavigate } from "react-router-dom";
+import FollowButton from "./FollowButton";
 
 function OtherUser({ user }) {
-  const { userData } = useSelector((state) => state.user);
+  // const { userData } = useSelector((state) => state.user);
   const navigate = useNavigate();
   return (
     <div className="w-full h-[80px] flex items-center justify-between border-b-2 border-gray-800">
@@ -29,9 +30,12 @@ function OtherUser({ user }) {
           </div>
         </div>
       </div>
-      <button className="px-[10px] w-[100px] py-[5px] h-[35px] bg-[white] rounded-2xl hover:text-gray-700 transition-colors cursor-pointer">
-        Follow
-      </button>
+      <FollowButton
+        tailwind={
+          "px-[10px] w-[100px] py-[5px] h-[35px] bg-[white] rounded-2xl hover:text-gray-700 transition-colors cursor-pointer"
+        }
+        targetUserId={user._id}
+      />
     </div>
   );
 }

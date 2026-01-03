@@ -36,10 +36,10 @@ export const uploadPost = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
   try {
-    const posts = await Post.find({}).populate(
-      "author",
-      "name userName profileImage"
-    );
+    const posts = await Post.find({})
+      .populate("author", "name userName profileImage")
+      .populate("comments.author", "userName profileImage")
+      .sort({ createdAt: -1 });
     return res.status(200).json(posts);
   } catch (error) {
     return res.status(500).json({ message: `GetAllPosts Error ${error}!` });
@@ -61,14 +61,14 @@ export const like = async (req, res) => {
 
     if (alreadyLiked) {
       post.likes = post.likes.filter(
-        (id) => id.toString() !== res.userId.toString()
+        (id) => id.toString() !== req.userId.toString()
       );
     } else {
       post.likes.push(req.userId);
     }
 
     await post.save();
-    post.populate("author", "name userName profileImage");
+    await post.populate("author", "name userName profileImage");
     return res.status(200).json(post);
   } catch (error) {
     return res.status(500).json({ message: `Like Post Error ${error}!` });
@@ -78,11 +78,11 @@ export const like = async (req, res) => {
 export const comments = async (req, res) => {
   try {
     const { message } = req.body;
-    const postId = req.params.postId;
-    const post = await Post.findById(postId);
+    const { postId } = req.params;
 
+    const post = await Post.findById(postId);
     if (!post) {
-      return res.status(400).json({ message: "Post Was Not Found!" });
+      return res.status(404).json({ message: "Post not found!" });
     }
 
     post.comments.push({
@@ -91,11 +91,14 @@ export const comments = async (req, res) => {
     });
 
     await post.save();
-    post.populate("author", "name userName profileImage");
-    post.populate("comments.author");
+
+    await post.populate("author", "userName profileImage");
+    await post.populate("comments.author", "userName profileImage");
+
     return res.status(200).json(post);
   } catch (error) {
-    return res.status(500).json({ message: `Comment Post Error ${error}!` });
+    console.error("COMMENT ERROR:", error);
+    return res.status(500).json({ message: error.message });
   }
 };
 

@@ -7,6 +7,7 @@ import { setProfileData, setUserData } from "../redux/userSlice";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import emptyImage from "../assets/Empty-Image.png";
 import Nav from "../components/Nav";
+import FollowButton from "../components/FollowButton";
 
 function Profile() {
   const { userName } = useParams();
@@ -14,12 +15,27 @@ function Profile() {
   const navigate = useNavigate();
   const { profileData, userData } = useSelector((state) => state.user);
 
+  const handleProfile = async () => {
+    try {
+      const result = await axios.get(
+        `${serverUrl}/api/user/getProfile/${userName}`,
+        {
+          withCredentials: true,
+        }
+      );
+      dispatch(setProfileData(result.data));
+    } catch (error) {
+      if (error.response?.status === 401) return;
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     if (!userData) return;
 
     const controller = new AbortController();
 
-    const handleProfile = async () => {
+    const fetchProfile = async () => {
       try {
         const result = await axios.get(
           `${serverUrl}/api/user/getProfile/${userName}`,
@@ -28,7 +44,6 @@ function Profile() {
             signal: controller.signal,
           }
         );
-
         dispatch(setProfileData(result.data));
       } catch (error) {
         if (error.name === "CanceledError") return;
@@ -36,7 +51,7 @@ function Profile() {
       }
     };
 
-    handleProfile();
+    fetchProfile();
 
     return () => {
       controller.abort();
@@ -111,27 +126,19 @@ function Profile() {
         <div>
           <div className="flex items-center justify-center gap-[25px]">
             <div className="flex relative">
-              <div className="w-[45px] h-[45px] border-2 border-gray-800 rounded-full overflow-hidden">
-                <img
-                  src={profileData?.profileImage || emptyImage}
-                  alt="Default Profile Image"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="w-[45px] h-[45px] absolute border-2 border-gray-800 rounded-full overflow-hidden left-[10px]">
-                <img
-                  src={profileData?.profileImage || emptyImage}
-                  alt="Default Profile Image"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="w-[45px] h-[45px] absolute border-2 border-gray-800 rounded-full overflow-hidden left-[20px]">
-                <img
-                  src={profileData?.profileImage || emptyImage}
-                  alt="Default Profile Image"
-                  className="w-full h-full object-cover"
-                />
-              </div>
+              {profileData?.followers?.slice(0, 3).map((user, index) => (
+                <div
+                  key={user._id || index}
+                  className={`w-[45px] h-[45px] border-2 border-gray-800 rounded-full overflow-hidden ${
+                    index > 0 ? `absolute left-[${index * 9}]` : ""
+                  }`}>
+                  <img
+                    src={user?.profileImage || emptyImage}
+                    alt="Default Profile Image"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
             </div>
             <div className="text-gray-50 text-[25px] md:text-[30px] font-semibold">
               {profileData?.followers.length}
@@ -180,7 +187,7 @@ function Profile() {
         {userData && profileData?._id === userData._id && (
           <>
             <button
-              className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-gray-50 cursor-pointer rounded-2xl"
+              className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-gray-50 cursor-pointer rounded-2xl border border-transparent hover:border-gray-600"
               onClick={() => navigate("/editprofile")}>
               Edit Profile
             </button>
@@ -189,9 +196,14 @@ function Profile() {
 
         {userData && profileData?._id !== userData._id && (
           <>
-            <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-gray-50 cursor-pointer rounded-2xl">
-              Follow
-            </button>
+            <FollowButton
+              tailwind={
+                "px-[10px] min-w-[150px] py-[5px] h-[40px] bg-gray-50 cursor-pointer rounded-2xl"
+              }
+              targetUserId={profileData?._id}
+              onFollowChange={handleProfile}
+            />
+
             <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-gray-50 cursor-pointer rounded-2xl">
               Message
             </button>

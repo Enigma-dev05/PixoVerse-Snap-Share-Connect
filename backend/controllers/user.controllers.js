@@ -73,7 +73,12 @@ export const editProfile = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     const userName = req.params.userName;
-    const user = await User.findOne({ userName }).select("-password");
+    const user = await User.findOne({ userName })
+      .select("-password")
+      .populate("posts")
+      .populate("loops")
+      .populate("followers", "userName profileImage name")
+      .populate("following", "userName profileImage name");
 
     if (!user) {
       return res.status(400).json({ message: "User Not Found!" });
@@ -82,5 +87,55 @@ export const getProfile = async (req, res) => {
     return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json({ message: `Get Profile Error ${error}!` });
+  }
+};
+
+export const follow = async (req, res) => {
+  try {
+    const currentUserId = req.userId;
+    const targetUserId = req.params.targetUserId;
+
+    if (!targetUserId) {
+      return res.status(400).json({ message: "Target User Not Found!" });
+    }
+
+    if (currentUserId === targetUserId) {
+      return res.status(400).json({ message: "You Cannot Follow YourSelf!" });
+    }
+
+    const currentUser = await User.findById(currentUserId);
+    const targetUser = await User.findById(targetUserId);
+
+    const isFollowing = currentUser.following.includes(targetUser);
+
+    if (isFollowing) {
+      currentUser.following = currentUser.following.filter(
+        (id) => id.toString() !== targetUserId
+      );
+      targetUser.following = targetUser.following.filter(
+        (id) => id.toString() !== currentUserId
+      );
+
+      await currentUser.save();
+      await targetUser.save();
+
+      return res.status(200).json({
+        following: false,
+        message: "Successfully Unfollowed The User!",
+      });
+    } else {
+      currentUser.following.push(targetUserId);
+      targetUser.followers.push(currentUserId);
+
+      await currentUser.save();
+      await targetUser.save();
+
+      return res.status(200).json({
+        following: true,
+        message: "Successfully Followed The User!",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: `Follow Error ${error}!` });
   }
 };

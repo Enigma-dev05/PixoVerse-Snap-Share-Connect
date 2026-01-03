@@ -10,6 +10,7 @@ import GetSuggestedUsers from "./hooks/getSuggestedUsers";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import Upload from "./pages/Upload";
+import GetAllPost from "./hooks/getAllPost";
 
 export const serverUrl = "http://localhost:5000";
 
@@ -20,6 +21,7 @@ function App() {
     <>
       {userData && <GetCurrentUser />}
       {userData && <GetSuggestedUsers />}
+      {userData && <GetAllPost />}
 
       <Routes>
         <Route
