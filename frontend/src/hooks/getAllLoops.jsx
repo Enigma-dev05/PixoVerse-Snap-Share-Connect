@@ -3,9 +3,9 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 // import { setUserData } from "../redux/userSlice";
-import { setPostData } from "../redux/postSlice";
+import { setLoopData } from "../redux/loopSlice";
 
-function GetAllPost() {
+function GetAllLoops() {
   const dispatch = useDispatch();
   const { postData } = useSelector((state) => state.post);
 
@@ -13,12 +13,12 @@ function GetAllPost() {
     const controller = new AbortController();
 
     axios
-      .get(`${serverUrl}/api/post/getAll`, {
+      .get(`${serverUrl}/api/loop/getAll`, {
         withCredentials: true,
         signal: controller.signal,
       })
       .then((res) => {
-        dispatch(setPostData(res.data));
+        dispatch(setLoopData(res.data));
       })
       .catch((error) => {
         if (error.name === "CancelledError") return;
@@ -33,4 +33,4 @@ function GetAllPost() {
   return null;
 }
 
-export default GetAllPost;
+export default GetAllLoops;

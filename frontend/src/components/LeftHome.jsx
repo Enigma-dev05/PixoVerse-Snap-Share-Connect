@@ -44,7 +44,7 @@ function LeftHome() {
             <img
               src={userData.profileImage || emptyImage}
               alt="Default Profile Image"
-              className="w-full object-cover"
+              className="w-full h-full object-cover "
             />
           </div>
           <div>

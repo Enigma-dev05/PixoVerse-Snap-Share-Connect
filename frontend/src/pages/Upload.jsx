@@ -172,6 +172,7 @@ function Upload() {
           onClick={() => mediaInput.current.click()}>
           <input
             type="file"
+            accept={uploadType === "loop" ? "video/*" : ""}
             hidden
             ref={mediaInput}
             onChange={handleMedia}

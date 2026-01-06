@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { FiVolume2 } from "react-icons/fi";
 import { FiVolumeX } from "react-icons/fi";
 
@@ -16,6 +16,32 @@ function VideoPlayer({ media }) {
       setIsPlaying(true);
     }
   };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const video = videoTag.current;
+
+        if (entry.isIntersecting) {
+          video.play();
+          setIsPlaying(true);
+        } else {
+          video.pause();
+          setIsPlaying(false);
+        }
+      },
+      { threshold: 0.6 }
+    );
+    if (videoTag.current) {
+      observer.observe(videoTag.current);
+    }
+
+    return () => {
+      if (videoTag.current) {
+        observer.unobserve(videoTag.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="w-full relative cursor-pointer rounded-2xl overflow-hidden">

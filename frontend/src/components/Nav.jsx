@@ -21,7 +21,7 @@ function Nav() {
       <div onClick={() => navigate("/upload")}>
         <FiPlusSquare className="text-white w-[25px] h-[25px] cursor-pointer" />
       </div>
-      <div>
+      <div onClick={() => navigate("/loops")}>
         <RxVideo className="text-white w-[30px] h-[30px] cursor-pointer" />
       </div>
       <div

@@ -100,29 +100,32 @@ export const follow = async (req, res) => {
     }
 
     if (currentUserId === targetUserId) {
-      return res.status(400).json({ message: "You Cannot Follow YourSelf!" });
+      return res.status(400).json({ message: "You Cannot Follow Yourself!" });
     }
 
-    const currentUser = await User.findById(currentUserId);
+    const currentUser = await User.findById(currentUserId).select("-password");
     const targetUser = await User.findById(targetUserId);
 
-    const isFollowing = currentUser.following.includes(targetUser);
+    if (!currentUser || !targetUser) {
+      return res.status(400).json({ message: "User Not Found!" });
+    }
+
+    const isFollowing = currentUser.following.some(
+      (id) => id.toString() === targetUserId
+    );
 
     if (isFollowing) {
       currentUser.following = currentUser.following.filter(
         (id) => id.toString() !== targetUserId
       );
-      targetUser.following = targetUser.following.filter(
+      targetUser.followers = targetUser.followers.filter(
         (id) => id.toString() !== currentUserId
       );
 
       await currentUser.save();
       await targetUser.save();
 
-      return res.status(200).json({
-        following: false,
-        message: "Successfully Unfollowed The User!",
-      });
+      return res.status(200).json(currentUser);
     } else {
       currentUser.following.push(targetUserId);
       targetUser.followers.push(currentUserId);
@@ -130,10 +133,7 @@ export const follow = async (req, res) => {
       await currentUser.save();
       await targetUser.save();
 
-      return res.status(200).json({
-        following: true,
-        message: "Successfully Followed The User!",
-      });
+      return res.status(200).json(currentUser);
     }
   } catch (error) {
     return res.status(500).json({ message: `Follow Error ${error}!` });

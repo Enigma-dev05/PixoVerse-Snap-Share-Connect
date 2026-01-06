@@ -11,6 +11,8 @@ import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import Upload from "./pages/Upload";
 import GetAllPost from "./hooks/getAllPost";
+import Loops from "./pages/Loops";
+import GetAllLoops from "./hooks/getAllLoops";
 
 export const serverUrl = "http://localhost:5000";
 
@@ -22,6 +24,7 @@ function App() {
       {userData && <GetCurrentUser />}
       {userData && <GetSuggestedUsers />}
       {userData && <GetAllPost />}
+      {userData && <GetAllLoops />}
 
       <Routes>
         <Route
@@ -51,6 +54,10 @@ function App() {
         <Route
           path="/upload"
           element={userData ? <Upload /> : <Navigate to={"/signin"} />}
+        />
+        <Route
+          path="/loops"
+          element={userData ? <Loops /> : <Navigate to={"/signin"} />}
         />
       </Routes>
     </>
