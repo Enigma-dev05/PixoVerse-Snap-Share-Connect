@@ -54,8 +54,8 @@ export const viewStory = async (req, res) => {
     }
 
     const populatedStory = await Story.findById(story._id)
-      .populate("author", "name userName, profileImage")
-      .populate("viewers", "name userName, profileImage");
+      .populate("author", "name userName profileImage")
+      .populate("viewers", "name userName profileImage");
 
     return res.status(200).json(populatedStory);
   } catch (error) {
@@ -74,12 +74,27 @@ export const getStoryByUserName = async (req, res) => {
 
     const story = await Story.find({
       author: user._id,
-    })
-      .populate("viewers")
-      .populate("author");
+    }).populate("viewers author");
 
     return res.status(200).json(story);
   } catch (error) {
     res.status(500).json({ message: `GetStoryByUserName Error ${error}!` });
+  }
+};
+
+export const getAllStories = async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.userId);
+    const followingIds = currentUser.following;
+
+    const stories = await Story.find({
+      author: { $in: followingIds },
+    })
+      .populate("viewers author")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json(stories);
+  } catch (error) {
+    res.status(500).json({ message: `GetAllStories Error ${error}!` });
   }
 };

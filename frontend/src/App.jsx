@@ -13,6 +13,8 @@ import Upload from "./pages/Upload";
 import GetAllPost from "./hooks/getAllPost";
 import Loops from "./pages/Loops";
 import GetAllLoops from "./hooks/getAllLoops";
+import Story from "./pages/Story";
+import GetAllStories from "./hooks/getAllStories";
 
 export const serverUrl = "http://localhost:5000";
 
@@ -25,6 +27,7 @@ function App() {
       {userData && <GetSuggestedUsers />}
       {userData && <GetAllPost />}
       {userData && <GetAllLoops />}
+      {userData && <GetAllStories />}
 
       <Routes>
         <Route
@@ -46,6 +49,10 @@ function App() {
         <Route
           path="/profile/:userName"
           element={userData ? <Profile /> : <Navigate to={"/signin"} />}
+        />
+        <Route
+          path="/story/:userName"
+          element={userData ? <Story /> : <Navigate to={"/signin"} />}
         />
         <Route
           path="/editprofile"

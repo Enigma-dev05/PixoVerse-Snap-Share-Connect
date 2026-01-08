@@ -18,6 +18,7 @@ function Post({ post }) {
 
   const [showComment, setShowComment] = useState(false);
   const [message, setMessage] = useState("");
+
   const dispatch = useDispatch();
 
   const handleLike = async () => {
@@ -88,7 +89,7 @@ function Post({ post }) {
         {userData._id !== post.author._id && (
           <FollowButton
             tailwind={
-              "px-[12px] py-[6px] bg-gray-900 text-white rounded-xl border border-transparent hover:border-gray-600 cursor-pointer"
+              "px-[12px] py-[6px] bg-gray-900 text-white rounded-xl border border-transparent hover:border-gray-600 cursor-pointer hover:scale-110 transition-transform"
             }
             targetUserId={post.author._id}
           />
@@ -109,7 +110,7 @@ function Post({ post }) {
 
       <div className="w-full h-[60px] flex justify-between items-center px-[20px] text-gray-50">
         <div className="flex gap-[20px]">
-          <div className="flex items-center gap-[6px]">
+          <div className="flex items-center gap-[6px] hover:scale-110 transition-transform">
             {!post.likes.includes(userData._id) ? (
               <GoHeart
                 className="w-[24px] h-[24px] cursor-pointer"
@@ -124,7 +125,7 @@ function Post({ post }) {
             <span>{post.likes.length}</span>
           </div>
 
-          <div className="flex items-center gap-[6px]">
+          <div className="flex items-center gap-[6px] hover:scale-110 transition-transform">
             <MdOutlineComment
               className="w-[24px] h-[24px] cursor-pointer"
               onClick={() => setShowComment((p) => !p)}
@@ -167,7 +168,7 @@ function Post({ post }) {
             />
 
             <IoSendSharp
-              className="w-[22px] h-[22px] cursor-pointer text-gray-50"
+              className="w-[22px] h-[22px] cursor-pointer text-gray-50  hover:scale-110 transition-transform"
               onClick={handleComment}
             />
           </div>

@@ -22,6 +22,8 @@ function VideoPlayer({ media }) {
       ([entry]) => {
         const video = videoTag.current;
 
+        if (!video) return;
+
         if (entry.isIntersecting) {
           video.play();
           setIsPlaying(true);

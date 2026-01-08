@@ -7,9 +7,8 @@ import axios from "axios";
 function FollowButton({ targetUserId, tailwind, onFollowChange }) {
   const { userData } = useSelector((state) => state.user);
 
-  // Safe check if following is an array
   const isFollowing = Array.isArray(userData?.following)
-    ? userData.following.includes(targetUserId)
+    ? userData.following.some((user) => (user._id || user) === targetUserId)
     : false;
 
   const dispatch = useDispatch();
@@ -21,13 +20,8 @@ function FollowButton({ targetUserId, tailwind, onFollowChange }) {
         { withCredentials: true }
       );
 
-      console.log("Backend response:", result.data); // ← Add this
-      console.log("Following array:", result.data.following); // ← Add this
-
-      // Update userData with the response from backend
       dispatch(setUserData(result.data));
 
-      // Refresh profile data if callback provided
       if (onFollowChange) {
         onFollowChange();
       }

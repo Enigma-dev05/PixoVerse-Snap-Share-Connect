@@ -6,7 +6,8 @@ export const getCurrentUser = async (req, res) => {
     const userId = req.userId;
     const user = await User.findById(userId)
       .populate("posts")
-      .populate("loops");
+      .populate("loops")
+      .populate("following", "userName profileImage");
 
     if (!user) {
       return res.status(400).json({ message: "User not Found!" });
@@ -111,30 +112,27 @@ export const follow = async (req, res) => {
     }
 
     const isFollowing = currentUser.following.some(
-      (id) => id.toString() === targetUserId
+      (id) => id.toString() === targetUserId.toString()
     );
 
     if (isFollowing) {
       currentUser.following = currentUser.following.filter(
-        (id) => id.toString() !== targetUserId
+        (id) => id.toString() !== targetUserId.toString()
       );
       targetUser.followers = targetUser.followers.filter(
-        (id) => id.toString() !== currentUserId
+        (id) => id.toString() !== currentUserId.toString()
       );
-
-      await currentUser.save();
-      await targetUser.save();
-
-      return res.status(200).json(currentUser);
     } else {
       currentUser.following.push(targetUserId);
       targetUser.followers.push(currentUserId);
-
-      await currentUser.save();
-      await targetUser.save();
-
-      return res.status(200).json(currentUser);
     }
+
+    await currentUser.save();
+    await targetUser.save();
+
+    await currentUser.populate("following", "userName profileImage");
+
+    return res.status(200).json(currentUser);
   } catch (error) {
     return res.status(500).json({ message: `Follow Error ${error}!` });
   }

@@ -18,7 +18,7 @@ function OtherUser({ user }) {
           <img
             src={user.profileImage || emptyImage}
             alt="Default Profile Image"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover hover:scale-110 transition-transform"
           />
         </div>
         <div>
@@ -32,7 +32,7 @@ function OtherUser({ user }) {
       </div>
       <FollowButton
         tailwind={
-          "px-[10px] w-[100px] py-[5px] h-[35px] bg-[white] rounded-2xl hover:text-gray-700 transition-colors cursor-pointer"
+          "px-[10px] w-[100px] py-[5px] h-[35px] bg-[white] rounded-2xl hover:text-gray-700 transition-colors cursor-pointer hover:scale-110 transition-transform"
         }
         targetUserId={user._id}
       />

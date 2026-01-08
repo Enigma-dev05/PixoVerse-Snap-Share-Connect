@@ -40,7 +40,7 @@ function LeftHome() {
       </div>
       <div className="flex items-center w-full justify-between gap-[10px] p-[20px] border-b-2 border-b-gray-800 py-5">
         <div className="flex items-center gap-[10px]">
-          <div className="w-[70px] h-[70px] border-2 border-gray-800 rounded-full cursor-pointer overflow-hidden">
+          <div className="w-[70px] h-[70px] border-2 border-gray-800 rounded-full overflow-hidden">
             <img
               src={userData.profileImage || emptyImage}
               alt="Default Profile Image"
@@ -57,7 +57,7 @@ function LeftHome() {
           </div>
         </div>
         <div
-          className="font-semibold text-gray-50 hover:text-red-400 transition-colors cursor-pointer"
+          className="font-semibold text-gray-50 hover:text-red-400 transition-colors cursor-pointer hover:scale-110 transition-transform"
           onClick={handleLogOut}>
           Log Out
         </div>

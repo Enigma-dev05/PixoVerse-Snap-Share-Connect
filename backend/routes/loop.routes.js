@@ -12,7 +12,7 @@ const LoopRouter = express.Router();
 
 LoopRouter.post("/upload", isAuth, upload.single("media"), uploadLoop);
 LoopRouter.get("/getAll", isAuth, getAllLoops);
-LoopRouter.get("/like/:loopId ", isAuth, like);
-LoopRouter.post("/comment", isAuth, comments);
+LoopRouter.get("/like/:loopId", isAuth, like);
+LoopRouter.post("/comment/:loopId", isAuth, comments);
 
 export default LoopRouter;

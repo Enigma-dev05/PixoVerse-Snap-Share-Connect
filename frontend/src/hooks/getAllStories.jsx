@@ -3,11 +3,12 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 import { setFollowing, setUserData } from "../redux/userSlice";
+import { setStoryList } from "../redux/storySlice";
 
-function GetCurrentUser() {
+function GetAllStories() {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.user);
-  const { storyData } = useSelector((state) => state.story);
+  //   const { storyData } = useSelector((state) => state.story);
 
   useEffect(() => {
     if (!userData) return;
@@ -15,13 +16,12 @@ function GetCurrentUser() {
     const controller = new AbortController();
 
     axios
-      .get(`${serverUrl}/api/user/current`, {
+      .get(`${serverUrl}/api/story/getAll`, {
         withCredentials: true,
         signal: controller.signal,
       })
       .then((res) => {
-        dispatch(setUserData(res.data));
-        dispatch(setFollowing(res.data.following));
+        dispatch(setStoryList(res.data));
       })
       .catch((error) => {
         if (error.name === "CanceledError") return;
@@ -31,9 +31,9 @@ function GetCurrentUser() {
     return () => {
       controller.abort();
     };
-  }, [userData, dispatch, storyData]);
+  }, [userData, dispatch]);
 
   return null;
 }
 
-export default GetCurrentUser;
+export default GetAllStories;

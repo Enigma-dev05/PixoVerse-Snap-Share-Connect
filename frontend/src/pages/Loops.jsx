@@ -22,16 +22,16 @@ function Loops() {
         </h1>
       </div>
 
-      <di className="h-full overflow-y-auto snap-y snap-mandatory scrollbar-hide">
+      <div className="h-full overflow-y-auto snap-y snap-mandatory scrollbar-hide">
         {loopData?.map((loop, index) => (
           <div className="h-screen snap-start">
             <LoopCard
               loop={loop}
-              key={index}
+              key={loop._id || index}
             />
           </div>
         ))}
-      </di>
+      </div>
     </div>
   );
 }

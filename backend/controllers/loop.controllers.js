@@ -59,14 +59,14 @@ export const like = async (req, res) => {
 
     if (alreadyLiked) {
       loop.likes = loop.likes.filter(
-        (id) => id.toString() !== res.userId.toString()
+        (id) => id.toString() !== req.userId.toString()
       );
     } else {
       loop.likes.push(req.userId);
     }
 
     await loop.save();
-    loop.populate("author", "name userName profileImage");
+    await loop.populate("author", "name userName profileImage");
     return res.status(200).json(loop);
   } catch (error) {
     return res.status(500).json({ message: `Like Loop Error ${error}!` });
@@ -83,15 +83,17 @@ export const comments = async (req, res) => {
       return res.status(400).json({ message: "Loop Was Not Found!" });
     }
 
-    loop.comments.push({
+    const comment = {
       author: req.userId,
       message,
-    });
+    };
 
+    loop.comments.push(comment);
     await loop.save();
-    loop.populate("author", "name userName profileImage");
-    loop.populate("comments.author");
-    return res.status(200).json(post);
+
+    await loop.populate("author", "name userName profileImage");
+    await loop.populate("comments.author");
+    return res.status(200).json(loop);
   } catch (error) {
     return res.status(500).json({ message: `Comment Loop Error ${error}!` });
   }

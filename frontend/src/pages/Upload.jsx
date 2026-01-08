@@ -8,6 +8,7 @@ import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 import { setPostData } from "../redux/postSlice";
 import { setStoryData } from "../redux/storySlice";
+import { setUserData } from "../redux/userSlice";
 import { setLoopData } from "../redux/loopSlice";
 import { ClipLoader } from "react-spinners";
 
@@ -73,8 +74,8 @@ function Upload() {
         formData,
         { withCredentials: true }
       );
-
-      dispatch(setStoryData([...storyData, result.data]));
+      // dispatch(setStoryData([...storyData, result.data]));
+      setUserData((prev) => ({ ...prev, story: result.data }));
       setLoading(false);
       navigate("/");
     } catch (error) {
