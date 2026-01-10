@@ -26,7 +26,6 @@ function Story() {
           }
         );
         dispatch(setStoryData(result.data[0]));
-        console.log(storyData);
       } catch (error) {
         if (error.name === "CanceledError") return;
         console.log(error);

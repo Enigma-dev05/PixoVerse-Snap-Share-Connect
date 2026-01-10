@@ -9,6 +9,7 @@ import Post from "./Post";
 function Feed() {
   const { postData } = useSelector((state) => state.post);
   const { userData } = useSelector((state) => state.user);
+  const { storyList } = useSelector((state) => state.story);
 
   const scrollRef = useRef(null);
   const handleWheel = (e) => {
@@ -35,9 +36,19 @@ function Feed() {
         className="flex w-full overflow-x-auto gap-[10px] items-center mt-[24px] px-[16px] scroll-smooth">
         <StoryDp
           userName={"Your Story"}
-          ProfileImage={userData.profileImage}
-          story={userData.story}
+          ProfileImage={userData?.profileImage}
+          story={userData?.story}
         />
+        {storyList &&
+          storyList.length > 0 &&
+          storyList.map((story, index) => (
+            <StoryDp
+              key={index}
+              userName={story?.author?.userName}
+              ProfileImage={story?.author?.profileImage}
+              story={story}
+            />
+          ))}
       </div>
       <div className="w-full min-h-[100vh] flex flex-col items-center gap-[20px] p-[10px] pt-[40px] bg-gradient-to-b from-gray-800 to-gray-900 rounded-t-[60px] relative pb-[120px] mt-5">
         <Nav />

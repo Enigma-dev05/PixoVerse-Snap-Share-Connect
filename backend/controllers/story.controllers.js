@@ -15,7 +15,7 @@ export const uploadStory = async (req, res) => {
     if (req.file) {
       media = await uploadOnCloudinary(req.file.path);
     } else {
-      res.status(400).json({ message: "Media Is Required!" });
+      return res.status(400).json({ message: "Media Is Required!" });
     }
 
     const story = await Story.create({
@@ -28,8 +28,8 @@ export const uploadStory = async (req, res) => {
     await user.save();
 
     const populatedStory = await Story.findById(story._id)
-      .populate("author", "name userName, profileImage")
-      .populate("viewers", "name userName, profileImage");
+      .populate("author", "name userName profileImage")
+      .populate("viewers", "name userName profileImage");
 
     return res.status(200).json(populatedStory);
   } catch (error) {
@@ -90,7 +90,7 @@ export const getAllStories = async (req, res) => {
     const stories = await Story.find({
       author: { $in: followingIds },
     })
-      .populate("viewers author")
+      .populate("author", "userName profileImage")
       .sort({ createdAt: -1 });
 
     return res.status(200).json(stories);
