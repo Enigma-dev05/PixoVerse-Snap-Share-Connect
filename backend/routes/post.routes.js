@@ -8,6 +8,7 @@ import {
   comments,
   saved,
 } from "../controllers/post.controllers.js";
+
 const postRouter = express.Router();
 
 postRouter.post("/upload", isAuth, upload.single("media"), uploadPost);

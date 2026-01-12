@@ -8,11 +8,11 @@ import {
   comments,
 } from "../controllers/loop.controllers.js";
 
-const LoopRouter = express.Router();
+const loopRouter = express.Router();
 
-LoopRouter.post("/upload", isAuth, upload.single("media"), uploadLoop);
-LoopRouter.get("/getAll", isAuth, getAllLoops);
-LoopRouter.get("/like/:loopId", isAuth, like);
-LoopRouter.post("/comment/:loopId", isAuth, comments);
+loopRouter.post("/upload", isAuth, upload.single("media"), uploadLoop);
+loopRouter.get("/getAll", isAuth, getAllLoops);
+loopRouter.get("/like/:loopId", isAuth, like);
+loopRouter.post("/comment/:loopId", isAuth, comments);
 
-export default LoopRouter;
+export default loopRouter;

@@ -1,22 +1,16 @@
-import React, { useRef } from "react";
+import React from "react";
 import logo from "../assets/Pixoverse-u.png";
 import { FaRegHeart } from "react-icons/fa6";
-import StoryDp from "./StoryDp";
 import Nav from "./Nav";
 import { useSelector } from "react-redux";
 import Post from "./Post";
+import { BiMessageAltDetail } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 
 function Feed() {
   const { postData } = useSelector((state) => state.post);
-  const { userData } = useSelector((state) => state.user);
-  const { storyList } = useSelector((state) => state.story);
-
-  const scrollRef = useRef(null);
-  const handleWheel = (e) => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollLeft += e.deltaY;
-    }
-  };
+  //const { userData } = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   return (
     <div className="lg:w-[50%] w-full bg-gradient-to-b from-black to-gray-900 min-h-[100vh] lg:h-[100vh] relative lg:overflow-y-auto">
@@ -26,30 +20,15 @@ function Feed() {
           alt="Logo of PixoVerse"
           className="w-[20%]"
         />
-        <div>
+        <div className="flex items-center gap-[20px]">
           <FaRegHeart className="text-white w-[30px] h-[30px]" />
+          <BiMessageAltDetail
+            className="text-white w-[35px] h-[35px]"
+            onClick={() => navigate("/messages")}
+          />
         </div>
       </div>
-      <div
-        ref={scrollRef}
-        onWheel={handleWheel}
-        className="flex w-full overflow-x-auto gap-[10px] items-center mt-[24px] px-[16px] scroll-smooth">
-        <StoryDp
-          userName={"Your Story"}
-          ProfileImage={userData?.profileImage}
-          story={userData?.story}
-        />
-        {storyList &&
-          storyList.length > 0 &&
-          storyList.map((story, index) => (
-            <StoryDp
-              key={index}
-              userName={story?.author?.userName}
-              ProfileImage={story?.author?.profileImage}
-              story={story}
-            />
-          ))}
-      </div>
+
       <div className="w-full min-h-[100vh] flex flex-col items-center gap-[20px] p-[10px] pt-[40px] bg-gradient-to-b from-gray-800 to-gray-900 rounded-t-[60px] relative pb-[120px] mt-5">
         <Nav />
         {postData?.map((post, index) => (

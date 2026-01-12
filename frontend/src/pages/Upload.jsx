@@ -7,8 +7,7 @@ import VideoPlayer from "../components/VideoPlayer";
 import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 import { setPostData } from "../redux/postSlice";
-import { setStoryData } from "../redux/storySlice";
-import { setUserData } from "../redux/userSlice";
+//import { setUserData } from "../redux/userSlice";
 import { setLoopData } from "../redux/loopSlice";
 import { ClipLoader } from "react-spinners";
 
@@ -24,7 +23,6 @@ function Upload() {
   const mediaInput = useRef();
   const dispatch = useDispatch();
   const { postData } = useSelector((state) => state.post);
-  const { storyData } = useSelector((state) => state.story);
   const { loopData } = useSelector((state) => state.loop);
 
   const handleMedia = (e) => {
@@ -62,27 +60,6 @@ function Upload() {
     }
   };
 
-  const uploadStory = async () => {
-    setLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append("mediaType", mediaType);
-      formData.append("media", backendMedia);
-
-      const result = await axios.post(
-        `${serverUrl}/api/story/upload`,
-        formData,
-        { withCredentials: true }
-      );
-      // dispatch(setStoryData([...storyData, result.data]));
-      setUserData((prev) => ({ ...prev, story: result.data }));
-      setLoading(false);
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const uploadLoop = async () => {
     setLoading(true);
     try {
@@ -108,8 +85,6 @@ function Upload() {
     setLoading(true);
     if (uploadType === "post") {
       uploadPost();
-    } else if (uploadType === "story") {
-      uploadStory();
     } else {
       uploadLoop();
     }
@@ -140,18 +115,6 @@ function Upload() {
             setUploadType("post");
           }}>
           Post
-        </div>
-
-        <div
-          className={`${
-            uploadType === "story"
-              ? "bg-gray-900 text-gray-50  shadow-gray-900"
-              : ""
-          } w-[30%] h-[80%] flex justify-center items-center text-[20px] font-semibold hover:bg-gray-900 rounded-full hover:text-gray-50 transition-colors cursor-pointer hover:shadow-2xl hover:shadow-gray-900`}
-          onClick={() => {
-            setUploadType("story");
-          }}>
-          Story
         </div>
 
         <div
@@ -196,15 +159,14 @@ function Upload() {
                   className="w-full h-auto max-h-[400px] object-cover"
                 />
               </div>
-              {uploadType !== "story" && (
-                <input
-                  type="text"
-                  className="w-full bg-gray-600 border-b-gray-700 border-b-2 rounded-2xl outline-none px-[10px] py-[5px] text-gray-50 mt-[30px]"
-                  placeholder="Write Your Caption"
-                  onChange={(e) => setCaption(e.target.value)}
-                  value={caption}
-                />
-              )}
+              <input
+                type="text"
+                className="w-full bg-gray-600 border-b-gray-700 border-b-2 rounded-2xl outline-none px-[10px] py-[5px] text-gray-50 mt-[30px]"
+                placeholder="Write Your Caption"
+                onChange={(e) => setCaption(e.target.value)}
+                value={caption}
+              />
+              }
             </>
           )}
 

@@ -9,6 +9,7 @@ import emptyImage from "../assets/Empty-Image.png";
 import Nav from "../components/Nav";
 import FollowButton from "../components/FollowButton";
 import Post from "../components/Post";
+import { setSelectedUser } from "../redux/messageSlice";
 
 function Profile() {
   const { userName } = useParams();
@@ -206,7 +207,12 @@ function Profile() {
               onFollowChange={handleProfile}
             />
 
-            <button className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-gray-50 cursor-pointer rounded-2xl">
+            <button
+              className="px-[10px] min-w-[150px] py-[5px] h-[40px] bg-gray-50 cursor-pointer rounded-2xl"
+              onClick={() => {
+                dispatch(setSelectedUser(profileData));
+                navigate("/messageArea");
+              }}>
               Message
             </button>
           </>

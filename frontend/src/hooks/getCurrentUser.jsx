@@ -7,7 +7,6 @@ import { setFollowing, setUserData } from "../redux/userSlice";
 function GetCurrentUser() {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.user);
-  const { storyData } = useSelector((state) => state.story);
 
   useEffect(() => {
     if (!userData) return;
@@ -31,7 +30,7 @@ function GetCurrentUser() {
     return () => {
       controller.abort();
     };
-  }, [userData, dispatch, storyData]);
+  }, [userData, dispatch]);
 
   return null;
 }

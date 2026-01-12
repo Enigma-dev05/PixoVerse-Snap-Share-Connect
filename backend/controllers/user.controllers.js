@@ -137,3 +137,12 @@ export const follow = async (req, res) => {
     return res.status(500).json({ message: `Follow Error ${error}!` });
   }
 };
+
+// export const followingList = async (req, res) => {
+//   try {
+//     const result = await User.findById(req.userId).populate("following");
+//     return res.status(200).json(result?.following);
+//   } catch (error) {
+//     return res.status(500).json({ message: `Following List Error ${error}!` });
+//   }
+// };

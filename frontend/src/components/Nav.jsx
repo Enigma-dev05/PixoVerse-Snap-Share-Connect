@@ -4,17 +4,12 @@ import { FiSearch } from "react-icons/fi";
 import { FiPlusSquare } from "react-icons/fi";
 import { RxVideo } from "react-icons/rx";
 import emptyImage from "../assets/Empty-Image.png";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 function Nav() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { userData } = useSelector((state) => state.user);
-
-  if (location.pathname.startsWith("/story/")) {
-    return null;
-  }
 
   return (
     <div className="w-[90%] lg:w-[40%] h-[60px] bg-gradient-to-b from-black to-gray-950 border-2 border-gray-500 flex justify-around items-center fixed bottom-5 left-1/2 -translate-x-1/2 rounded-full shadow-2xl shadow-gray-800 z-[100]">

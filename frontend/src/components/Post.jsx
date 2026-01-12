@@ -11,6 +11,7 @@ import { IoSendSharp } from "react-icons/io5";
 import { setPostData } from "../redux/postSlice";
 import { setUserData } from "../redux/userSlice";
 import FollowButton from "./FollowButton";
+import { useNavigate } from "react-router-dom";
 
 function Post({ post }) {
   const { userData } = useSelector((state) => state.user);
@@ -18,6 +19,7 @@ function Post({ post }) {
 
   const [showComment, setShowComment] = useState(false);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -74,7 +76,9 @@ function Post({ post }) {
     <div className="w-[90%] min-h-[500px] flex flex-col gap-[10px] bg-gradient-to-b from-gray-600 to-gray-700 items-center shadow-2xl rounded-2xl pb-[20px]">
       <div className="w-full h-[80px] flex justify-between items-center px-[10px]">
         <div className="flex items-center gap-[15px]">
-          <div className="w-[50px] h-[50px] rounded-full overflow-hidden border-2 border-gray-800">
+          <div
+            className="w-[50px] h-[50px] rounded-full overflow-hidden border-2 border-gray-800 cursor-pointer"
+            onClick={() => navigate(`/profile/${post?.author?.userName}`)}>
             <img
               src={post.author?.profileImage || emptyImage}
               className="w-full h-full object-cover"
