@@ -58,31 +58,39 @@ export const getAllMessage = async (req, res) => {
 export const getPrevUserChats = async (req, res) => {
   try {
     const currentUserId = req.userId;
+
     const conversations = await Conversation.find({
-      participants: currentUserId,
+      participants: { $in: [currentUserId] },
     })
-      .populate("participants", "username profileImage")
+      .populate("participants", "username profileImage name")
+      .populate({
+        path: "messages",
+        options: { sort: { createdAt: 1 } },
+      })
       .sort({ updatedAt: -1 });
 
     const userMap = {};
 
-    // conversations.forEach((conv) => {
-    //   if (userMap._id !== currentUserId) {
-    //     userMap(user._id) = user;
-    //   }
-    // });
-
     conversations.forEach((conv) => {
+      const lastMsg =
+        conv.messages.length > 0
+          ? conv.messages[conv.messages.length - 1]
+          : null;
+
       conv.participants.forEach((user) => {
         if (user._id.toString() !== currentUserId) {
-          userMap[user._id] = user;
+          userMap[user._id] = {
+            ...user.toObject(),
+            lastMessage: lastMsg,
+            updatedAt: conv.updatedAt,
+          };
         }
       });
     });
 
-    const previousUsers = Object.values(userMap);
-    res.statu(200).json(previousUsers);
+    res.status(200).json(Object.values(userMap));
   } catch (error) {
-    res.status(500).json({ message: `GetPrevUserChats Error ${error}!` });
+    console.error("GetPrevUserChats Error:", error);
+    res.status(500).json({ message: "Failed to fetch previous chats" });
   }
 };

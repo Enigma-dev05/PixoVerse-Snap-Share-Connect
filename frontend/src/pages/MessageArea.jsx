@@ -47,11 +47,6 @@ function MessageArea() {
       if (input) formData.append("message", input);
       if (backendImage) formData.append("media", backendImage);
 
-      console.log(
-        "Sending to:",
-        `${serverUrl}/api/message/send/${selectedUser._id}`
-      );
-
       const result = await axios.post(
         `${serverUrl}/api/message/send/${selectedUser._id}`,
         formData,

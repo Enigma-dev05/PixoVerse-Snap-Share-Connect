@@ -18,12 +18,12 @@ import Messages from "./pages/Messages";
 import MessageArea from "./pages/MessageArea";
 import { io } from "socket.io-client";
 import { setOnlineUsers, setSocket } from "./redux/socketSlice";
+import GetPrevChatUsers from "./hooks/getPrevChatUsers";
 
 export const serverUrl = "http://localhost:5000";
 
 function App() {
   const { userData } = useSelector((state) => state.user);
-  const { socket } = useSelector((state) => state.socket);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,6 +32,7 @@ function App() {
         query: {
           userId: userData._id,
         },
+        transports: ["websocket"],
       });
 
       dispatch(setSocket(socketIo));
@@ -39,15 +40,16 @@ function App() {
       socketIo.on("getOnlineUsers", (users) => {
         dispatch(setOnlineUsers(users));
       });
-
-      return () => socketIo.close();
-    } else {
-      if (socket) {
-        socket.close();
+      return () => {
+        socketIo.off("getOnlineUsers");
+        socketIo.close();
         dispatch(setSocket(null));
-      }
+      };
+    } else {
+      dispatch(setSocket(null));
+      dispatch(setOnlineUsers(null));
     }
-  }, [userData]);
+  }, [userData?._id, dispatch]);
 
   return (
     <>
@@ -55,6 +57,7 @@ function App() {
       {userData && <GetSuggestedUsers />}
       {userData && <GetAllPost />}
       {userData && <GetAllLoops />}
+      {userData && <GetPrevChatUsers />}
 
       <Routes>
         <Route
