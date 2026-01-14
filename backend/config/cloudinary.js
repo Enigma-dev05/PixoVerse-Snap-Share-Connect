@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// Use cloudinary.v2 instead of importing v2 directly
 const cloudinaryV2 = cloudinary.v2;
 
 cloudinaryV2.config({

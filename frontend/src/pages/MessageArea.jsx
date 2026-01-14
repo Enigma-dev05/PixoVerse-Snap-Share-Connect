@@ -1,5 +1,4 @@
-import React, { useState, useRef } from "react";
-import { useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -16,12 +15,23 @@ import ReceiverMessage from "../components/ReceiverMessage";
 function MessageArea() {
   const { selectedUser, messages } = useSelector((state) => state.message);
   const { userData } = useSelector((state) => state.user);
+  const { socket } = useSelector((state) => state.socket);
   const navigate = useNavigate();
   const [input, setInput] = useState("");
   const dispatch = useDispatch();
   const imageInput = useRef();
   const [frontendImage, setFrontendImage] = useState(null);
   const [backendImage, setBackendImage] = useState(null);
+  const messagesEndRef = useRef(null);
+
+  // Auto-scroll to bottom when new messages arrive
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleImage = (e) => {
     const file = e.target.files[0];
@@ -41,6 +51,7 @@ function MessageArea() {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
+    if (!input && !backendImage) return;
 
     try {
       const formData = new FormData();
@@ -58,36 +69,64 @@ function MessageArea() {
         }
       );
 
-      console.log("Response:", result.data);
-
       const currentMessages = messages || [];
       dispatch(setMessages([...currentMessages, result.data]));
 
       setInput("");
       setBackendImage(null);
       setFrontendImage(null);
-      handleRemoveImage();
     } catch (error) {
       console.error("Error sending message:", error);
       console.error("Error response:", error.response?.data);
     }
   };
 
-  const getAllMessages = async () => {
-    try {
-      const result = await axios.get(
-        `${serverUrl}/api/message/getAll/${selectedUser._id}`,
-        { withCredentials: true }
-      );
-      dispatch(setMessages(result.data));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  useEffect(() => {
+    const getAllMessages = async () => {
+      if (!selectedUser?._id) return;
+
+      try {
+        const result = await axios.get(
+          `${serverUrl}/api/message/getAll/${selectedUser._id}`,
+          { withCredentials: true }
+        );
+        dispatch(setMessages(result.data));
+      } catch (error) {
+        console.log("Error fetching messages:", error);
+      }
+    };
+
+    getAllMessages();
+  }, [selectedUser?._id, dispatch]);
 
   useEffect(() => {
-    getAllMessages();
-  }, []);
+    if (!socket) return;
+
+    const handleNewMessage = (newMessage) => {
+      console.log("New message received:", newMessage);
+
+      if (
+        newMessage.sender === selectedUser?._id ||
+        newMessage.receiver === selectedUser?._id
+      ) {
+        dispatch(setMessages([...(messages || []), newMessage]));
+      }
+    };
+
+    socket.on("newMessage", handleNewMessage);
+
+    return () => {
+      socket.off("newMessage", handleNewMessage);
+    };
+  }, [socket, selectedUser?._id, messages, dispatch]);
+
+  if (!selectedUser) {
+    return (
+      <div className="w-full h-[100vh] bg-gradient-to-b from-black to-gray-900 flex items-center justify-center">
+        <p className="text-gray-400">Select a user to start messaging</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-[100vh] bg-gradient-to-b from-black to-gray-900 relative">
@@ -119,8 +158,8 @@ function MessageArea() {
         </div>
       </div>
 
-      <div className="w-full h-[80%] pt-[100px] pb-[100px] lg:pb-[150px] px-[40px] flex flex-col gap-[30px] overflow-auto">
-        {messages &&
+      <div className="w-full h-[80%] pt-[100px] pb-[100px] px-[40px] flex flex-col gap-[15px] overflow-auto">
+        {messages && messages.length > 0 ? (
           messages.map((mess, index) =>
             mess.sender === userData._id ? (
               <SenderMessage
@@ -133,7 +172,15 @@ function MessageArea() {
                 message={mess}
               />
             )
-          )}
+          )
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-gray-500">
+              No messages yet. Start the conversation!
+            </p>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
       </div>
 
       <div className="w-full h-[80px] fixed bottom-0 flex justify-center items-center z-[100]">

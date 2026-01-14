@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import axios from "axios";
 import emptyImage from "../assets/Empty-Image.png";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,9 +13,10 @@ import { setUserData } from "../redux/userSlice";
 import FollowButton from "./FollowButton";
 import { useNavigate } from "react-router-dom";
 
-function Post({ post }) {
+const Post = memo(({ post }) => {
   const { userData } = useSelector((state) => state.user);
   const { postData } = useSelector((state) => state.post);
+  const { socket } = useSelector((state) => state.socket);
 
   const [showComment, setShowComment] = useState(false);
   const [message, setMessage] = useState("");
@@ -34,7 +35,7 @@ function Post({ post }) {
       );
       dispatch(setPostData(updatedPosts));
     } catch (error) {
-      console.error(error);
+      console.error("Error liking post:", error);
     }
   };
 
@@ -55,7 +56,7 @@ function Post({ post }) {
       dispatch(setPostData(updatedPosts));
       setMessage("");
     } catch (error) {
-      console.error(error);
+      console.error("Error commenting:", error);
     }
   };
 
@@ -68,16 +69,48 @@ function Post({ post }) {
 
       dispatch(setUserData(result.data));
     } catch (error) {
-      console.error(error);
+      console.error("Error saving post:", error);
     }
   };
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleLikedPost = (updatedData) => {
+      const updatedPosts = postData.map((p) =>
+        p._id === updatedData.postId ? { ...p, likes: updatedData.likes } : p
+      );
+      dispatch(setPostData(updatedPosts));
+    };
+
+    const handleCommentedPost = (updatedData) => {
+      const updatedPosts = postData.map((p) =>
+        p._id === updatedData.postId
+          ? { ...p, comments: updatedData.comments }
+          : p
+      );
+      dispatch(setPostData(updatedPosts));
+    };
+
+    socket.on("likedPost", handleLikedPost);
+    socket.on("commentedPost", handleCommentedPost);
+
+    return () => {
+      socket.off("likedPost", handleLikedPost);
+      socket.off("commentedPost", handleCommentedPost);
+    };
+  }, [socket, postData, dispatch]);
+
+  if (!post || !post.author) {
+    return null;
+  }
 
   return (
     <div className="w-[90%] min-h-[500px] flex flex-col gap-[10px] bg-gradient-to-b from-gray-600 to-gray-700 items-center shadow-2xl rounded-2xl pb-[20px]">
       <div className="w-full h-[80px] flex justify-between items-center px-[10px]">
         <div className="flex items-center gap-[15px]">
           <div
-            className="w-[50px] h-[50px] rounded-full overflow-hidden border-2 border-gray-800 cursor-pointer"
+            className="w-[50px] h-[50px] rounded-full overflow-hidden border-2 border-gray-800 cursor-pointer hover:scale-110 transition-transform"
             onClick={() => navigate(`/profile/${post?.author?.userName}`)}>
             <img
               src={post.author?.profileImage || emptyImage}
@@ -126,7 +159,7 @@ function Post({ post }) {
                 onClick={handleLike}
               />
             )}
-            <span>{post.likes.length}</span>
+            <span className="text-sm">{post.likes.length}</span>
           </div>
 
           <div className="flex items-center gap-[6px] hover:scale-110 transition-transform">
@@ -134,14 +167,17 @@ function Post({ post }) {
               className="w-[24px] h-[24px] cursor-pointer"
               onClick={() => setShowComment((p) => !p)}
             />
-            <span>{post.comments.length}</span>
+            <span className="text-sm">{post.comments.length}</span>
           </div>
         </div>
-        <div onClick={handleSaved}>
+
+        <div
+          onClick={handleSaved}
+          className="hover:scale-110 transition-transform cursor-pointer">
           {!userData.saved.includes(post._id) ? (
-            <MdBookmarkBorder className="w-[26px] h-[26px] cursor-pointer" />
+            <MdBookmarkBorder className="w-[26px] h-[26px]" />
           ) : (
-            <GoBookmarkFill className="w-[26px] h-[26px] cursor-pointer" />
+            <GoBookmarkFill className="w-[26px] h-[26px]" />
           )}
         </div>
       </div>
@@ -155,8 +191,9 @@ function Post({ post }) {
 
       {showComment && (
         <div className="w-full flex flex-col gap-[20px] px-[20px]">
+          {/* Add Comment Input */}
           <div className="flex items-center gap-[10px]">
-            <div className="w-[45px] h-[45px] rounded-full overflow-hidden border">
+            <div className="w-[45px] h-[45px] rounded-full overflow-hidden border-2 border-gray-500 flex-shrink-0">
               <img
                 src={userData?.profileImage || emptyImage}
                 className="w-full h-full object-cover"
@@ -167,39 +204,50 @@ function Post({ post }) {
             <input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && handleComment()}
               placeholder="Add A Comment..."
-              className="flex-1 bg-transparent border-b border-gray-400 outline-none text-gray-50 px-[6px]"
+              className="flex-1 bg-transparent border-b border-gray-400 outline-none text-gray-50 px-[6px] py-[8px]"
             />
 
             <IoSendSharp
-              className="w-[22px] h-[22px] cursor-pointer text-gray-50  hover:scale-110 transition-transform"
+              className={`w-[22px] h-[22px] cursor-pointer text-gray-50 hover:scale-110 transition-transform ${
+                !message.trim() ? "opacity-50" : ""
+              }`}
               onClick={handleComment}
             />
           </div>
 
           <div className="max-h-[300px] overflow-auto flex flex-col gap-[14px]">
-            {post.comments.map((com) => (
-              <div
-                key={com._id}
-                className="flex gap-3 items-start">
-                <img
-                  src={com.author?.profileImage || emptyImage}
-                  className="w-10 h-10 rounded-full object-cover"
-                  alt=""
-                />
-                <div className="text-gray-50">
-                  <span className="font-semibold mr-2">
-                    {com.author?.userName}
-                  </span>
-                  {com.message}
+            {post.comments && post.comments.length > 0 ? (
+              post.comments.map((com) => (
+                <div
+                  key={com._id}
+                  className="flex gap-3 items-start">
+                  <img
+                    src={com.author?.profileImage || emptyImage}
+                    className="w-10 h-10 rounded-full object-cover border-2 border-gray-500 flex-shrink-0"
+                    alt={com.author?.userName}
+                  />
+                  <div className="text-gray-50 flex-1">
+                    <span className="font-semibold mr-2">
+                      {com.author?.userName}
+                    </span>
+                    <span className="break-words">{com.message}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-gray-400 text-center py-4">
+                No comments yet. Be the first!
+              </p>
+            )}
           </div>
         </div>
       )}
     </div>
   );
-}
+});
+
+Post.displayName = "Post";
 
 export default Post;
