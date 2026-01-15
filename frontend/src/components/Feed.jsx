@@ -21,7 +21,6 @@ function Feed() {
           className="w-[20%]"
         />
         <div className="flex items-center gap-[20px]">
-          <FaRegHeart className="text-white w-[30px] h-[30px]" />
           <BiMessageAltDetail
             className="text-white w-[35px] h-[35px]"
             onClick={() => navigate("/messages")}

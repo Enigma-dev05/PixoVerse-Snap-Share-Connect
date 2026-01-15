@@ -6,6 +6,7 @@ import {
   getProfile,
   suggestedUsers,
   follow,
+  searchUser,
 } from "../controllers/user.controllers.js";
 
 import { upload } from "../middlewares/multer.js";
@@ -16,6 +17,7 @@ userRouter.get("/current", isAuth, getCurrentUser);
 userRouter.get("/suggested", isAuth, suggestedUsers);
 userRouter.get("/getProfile/:userName", isAuth, getProfile);
 userRouter.get("/follow/:targetUserId", isAuth, follow);
+userRouter.get("/search", isAuth, searchUser);
 userRouter.post(
   "/editProfile",
   isAuth,

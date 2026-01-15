@@ -16,7 +16,7 @@ function Nav() {
       <div onClick={() => navigate("/")}>
         <GoHomeFill className="text-white w-[25px] h-[25px] cursor-pointer" />
       </div>
-      <div>
+      <div onClick={() => navigate("/search")}>
         <FiSearch className="text-white w-[25px] h-[25px] cursor-pointer" />
       </div>
       <div onClick={() => navigate("/upload")}>

@@ -34,9 +34,6 @@ function LeftHome() {
           alt="Logo of PixoVerse"
           className="w-[20%]"
         />
-        <div>
-          <FaRegHeart className="text-white w-[30px] h-[30px]" />
-        </div>
       </div>
       <div className="flex items-center w-full justify-between gap-[10px] p-[20px] border-b-2 border-b-gray-800 py-5">
         <div className="flex items-center gap-[10px]">

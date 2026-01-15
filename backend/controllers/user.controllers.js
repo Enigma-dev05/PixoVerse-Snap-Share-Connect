@@ -138,11 +138,25 @@ export const follow = async (req, res) => {
   }
 };
 
-// export const followingList = async (req, res) => {
-//   try {
-//     const result = await User.findById(req.userId).populate("following");
-//     return res.status(200).json(result?.following);
-//   } catch (error) {
-//     return res.status(500).json({ message: `Following List Error ${error}!` });
-//   }
-// };
+export const searchUser = async (req, res) => {
+  try {
+    const { keyword } = req.query;
+
+    if (!keyword || keyword.trim() === "") {
+      return res.status(400).json({ message: "Keyword is required" });
+    }
+
+    const users = await User.find({
+      $or: [
+        { userName: { $regex: keyword, $options: "i" } },
+        { name: { $regex: keyword, $options: "i" } },
+      ],
+    })
+      .select("userName name profileImage followers")
+      .limit(20);
+
+    return res.status(200).json(users);
+  } catch (error) {
+    return res.status(500).json({ message: `Search Error: ${error}` });
+  }
+};

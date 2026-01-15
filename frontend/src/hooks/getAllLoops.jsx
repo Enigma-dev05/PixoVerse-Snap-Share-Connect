@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
-// import { setUserData } from "../redux/userSlice";
 import { setLoopData } from "../redux/loopSlice";
 
 function GetAllLoops() {
