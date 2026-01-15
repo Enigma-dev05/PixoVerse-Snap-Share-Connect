@@ -21,7 +21,7 @@ import { setOnlineUsers, setSocket } from "./redux/socketSlice";
 import GetPrevChatUsers from "./hooks/getPrevChatUsers";
 import Search from "./pages/Search";
 
-export const serverUrl = "http://localhost:5000";
+export const serverUrl = "https://pixoverse-backend.onrender.com";
 
 function App() {
   const { userData } = useSelector((state) => state.user);
