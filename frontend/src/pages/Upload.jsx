@@ -166,7 +166,6 @@ function Upload() {
                 onChange={(e) => setCaption(e.target.value)}
                 value={caption}
               />
-              }
             </>
           )}
 

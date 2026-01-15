@@ -15,7 +15,7 @@ const LoopCard = memo(({ loop }) => {
   const commentRef = useRef();
 
   const [isPlaying, setIsPlaying] = useState(true);
-  const [isMute, setIsMute] = useState(true);
+  const [isMute, setIsMute] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showHeart, setShowHeart] = useState(false);
   const [showComment, setShowComment] = useState(false);
