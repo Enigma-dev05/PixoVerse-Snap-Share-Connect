@@ -10,8 +10,8 @@ import {
 
 const authRouter = express.Router();
 
-authRouter.post("/signup", signUp);
-authRouter.post("/signin", signIn);
+authRouter.post("/signUp", signUp);
+authRouter.post("/signIn", signIn);
 authRouter.post("/sendOtp", sendOtp);
 authRouter.post("/verifyOtp", verifyOtp);
 authRouter.post("/resetPassword", resetPassword);
