@@ -2,7 +2,7 @@ import React from "react";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import OnlineUser from "../components/onlineUser";
+import OnlineUser from "../components/OnlineUser";
 import ChatUserCard from "../components/ChatUserCard";
 
 function Messages() {
